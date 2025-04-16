@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+void calcular_secuencia(int inicio) {
+    printf("Secuencia de Collatz para %d: ", inicio);
+    while (inicio != 1) {
+        printf("%d ", inicio);
+        inicio = (inicio % 2 == 0) ? (inicio / 2) : (3 * inicio + 1);
+    }
+    printf("1\n");
+}
+
+int validar_entrada(const char *str) {
+    int num = atoi(str);
+    if (num <= 0) {
+        fprintf(stderr, "Error: El número debe ser positivo.\n");
+        return -1;
+    }
+    if (num >= 50) {
+        fprintf(stderr, "Error: El número debe ser menor que 50.\n");
+        return -1;
+    }
+    return num;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "Uso: %s <número entre 1 y 49>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    int numero = validar_entrada(argv[1]);
+    if (numero == -1) {
+        return EXIT_FAILURE;
+    }
+
+    pid_t pid = fork();
+    
+    if (pid == -1) {
+        perror("Error al crear proceso hijo");
+        return EXIT_FAILURE;
+    }
+
+    if (pid == 0) { // Proceso hijo
+        calcular_secuencia(numero);
+    } else {        // Proceso padre
+        wait(NULL); // Esperar a que el hijo termine
+    }
+
+    return EXIT_SUCCESS;
+}

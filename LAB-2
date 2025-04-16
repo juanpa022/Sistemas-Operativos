@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define NUM_STUDS 5
+#define DATA_LEN 80
+
+typedef struct student
+{
+    char name[DATA_LEN];
+    int id;
+    double GPA;
+} student;
+
+void enterstudinfo(student *slist)
+{
+    char line[80];  
+    for (int i = 0; i < NUM_STUDS; i++)
+    {
+        printf("Student %d:\n", i + 1);
+
+        printf("Enter student %d name: ", i + 1);
+        fgets(slist[i].name, DATA_LEN, stdin);
+        
+        slist[i].name[strcspn(slist[i].name, "\n")] = 0;
+
+        printf("Enter id: ");
+        fgets(line, sizeof(line), stdin);
+        sscanf(line, "%d", &slist[i].id);
+
+        printf("Enter GPA: ");
+        fgets(line, sizeof(line), stdin);
+        sscanf(line, "%lf", &slist[i].GPA);
+
+        printf("\n");
+    }
+}
+
+void displstudinfo(student *slist)
+{
+    printf("*************Students Report:---------\n");
+    printf("--------------------------------------\n");
+    printf("%-25s| %-5s | %s  |\n", "NAME", "ID", "GPA");
+
+    
+    for (int i = 0; i < NUM_STUDS; i++)
+    {
+        
+        printf("%-25s| %-5d | %.2f  |\n", slist[i].name, slist[i].id, slist[i].GPA);
+    }
+}
+
+int main()
+{
+    
+    student studArr[NUM_STUDS];
+    enterstudinfo(studArr);
+    displstudinfo(studArr);
+
+    return 0;
+}
